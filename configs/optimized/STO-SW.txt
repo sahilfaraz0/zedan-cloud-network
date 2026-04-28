@@ -1,0 +1,15 @@
+hostname STO-SW
+
+! Layer 2 access switch — no SVIs, no routing
+! All ports in default VLAN 1
+
+interface FastEthernet0/1
+ ! Uplink to Switch6 FastEthernet0/1
+
+interface FastEthernet0/3
+ ! Uplink to STO-ASA Ethernet0/1
+ switchport mode access
+
+interface FastEthernet0/24
+ ! Uplink to STO-RTR GigabitEthernet0/0
+ switchport mode access

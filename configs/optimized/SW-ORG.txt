@@ -1,0 +1,16 @@
+hostname SW-ORG
+
+! Layer 2 access switch — no SVIs, no routing
+! All ports in default VLAN 1
+
+interface FastEthernet0/1
+ ! Uplink to backbone server
+
+interface FastEthernet0/2
+ ! Uplink to Switch0 FastEthernet0/1
+
+interface FastEthernet0/3
+ ! Wireless Router (base build only)
+
+interface FastEthernet0/24
+ ! Uplink to ASA-ORG Ethernet0/0

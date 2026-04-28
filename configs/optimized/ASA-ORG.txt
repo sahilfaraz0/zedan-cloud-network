@@ -1,0 +1,28 @@
+hostname FW-ORG
+
+interface Ethernet0/0
+ switchport access vlan 1
+
+interface Ethernet0/1
+ switchport access vlan 2
+
+interface Vlan1
+ nameif inside
+ security-level 100
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+
+interface Vlan2
+ nameif outside
+ security-level 0
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+
+access-list OUTSIDE-IN extended permit ip any any
+access-group OUTSIDE-IN in interface outside
+
+route outside 0.0.0.0 0.0.0.0 192.168.20.2 1
+
+dhcpd address 192.168.10.10-192.168.10.31 inside
+dhcpd option 3 ip 192.168.10.1
+dhcpd enable inside

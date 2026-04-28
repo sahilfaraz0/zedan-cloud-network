@@ -1,0 +1,29 @@
+hostname R-ORG
+
+interface GigabitEthernet0/0
+ ip address 192.168.20.2 255.255.255.0
+ duplex auto
+ speed 1000
+ no shutdown
+
+interface GigabitEthernet0/1
+ no ip address
+ shutdown
+
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+
+interface Serial0/0/0
+ no ip address
+ encapsulation frame-relay
+ no shutdown
+
+interface Serial0/0/0.1 point-to-point
+ ip address 10.0.0.2 255.255.255.252
+ frame-relay interface-dlci 301
+
+ip route 0.0.0.0       0.0.0.0        10.0.0.5
+ip route 192.168.10.0  255.255.255.0  192.168.20.1
+ip route 192.168.1.0   255.255.255.0  10.0.0.1
+ip route 192.168.100.0 255.255.255.0  10.0.0.1

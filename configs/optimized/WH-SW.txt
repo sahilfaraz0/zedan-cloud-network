@@ -1,0 +1,22 @@
+hostname WH-SW
+
+! Layer 2 access switch — no SVIs, no routing
+! All ports in default VLAN 1
+
+interface FastEthernet0/1
+ ! WEB server — 192.168.100.10
+
+interface FastEthernet0/2
+ ! FTP server — 192.168.100.20
+
+interface FastEthernet0/3
+ ! INTERNET server — 192.168.100.30
+
+interface FastEthernet0/4
+ ! Uplink to WH-ASA Ethernet0/1
+
+interface FastEthernet0/5
+ ! PC1 — 192.168.100.15
+
+interface FastEthernet0/24
+ ! Uplink to WH-RTR GigabitEthernet0/0

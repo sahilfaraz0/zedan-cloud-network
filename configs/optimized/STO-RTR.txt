@@ -1,0 +1,35 @@
+hostname STO-RTR
+
+ip dhcp excluded-address 192.168.50.2
+
+ip dhcp pool CLIENTS
+ network 192.168.50.0 255.255.255.0
+ default-router 192.168.50.1
+
+ip dhcp pool CLT-POOL
+ network 192.168.30.0 255.255.255.0
+ default-router 192.168.30.1
+
+interface GigabitEthernet0/0
+ ip address 192.168.50.1 255.255.255.0
+ no shutdown
+
+interface GigabitEthernet0/1
+ ip address 192.0.2.1 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/2
+ no ip address
+ shutdown
+
+interface Serial0/0/0
+ no ip address
+ encapsulation frame-relay
+ no shutdown
+
+interface Serial0/0/0.1 point-to-point
+ ip address 10.0.0.6 255.255.255.252
+ frame-relay interface-dlci 302
+
+ip route 192.168.100.0 255.255.255.0 10.0.0.5
+ip route 0.0.0.0       0.0.0.0       192.0.2.2
