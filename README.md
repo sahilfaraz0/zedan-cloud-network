@@ -140,6 +140,28 @@ All serial interfaces use `encapsulation frame-relay` with explicit `frame-relay
 All inter-zone routing uses **static routes**. No dynamic routing protocol is configured, keeping the design deterministic and easy to audit.
 
 
+### WH-RTR
+```
+ip route 192.168.10.0 255.255.255.0   10.0.0.2       ! Org inside via R-ORG
+ip route 192.168.20.0 255.255.255.0   10.0.0.6       ! Org outside via STO-RTR
+ip route 192.168.50.0 255.255.255.0   10.0.0.6       ! State office via STO-RTR
+ip route 0.0.0.0      0.0.0.0         192.168.200.2  ! Default via WH-ASA (optimized)
+ip route 192.168.150.0 255.255.255.0  10.0.10.2      ! PPP link routes (optimized)
+```
+
+### R-ORG
+```
+ip route 0.0.0.0       0.0.0.0        10.0.0.5        ! Default via WH-RTR
+ip route 192.168.10.0  255.255.255.0  192.168.20.1    ! Org inside via ASA
+ip route 192.168.100.0 255.255.255.0  10.0.0.1        ! Warehouse servers via WH-RTR
+```
+
+### STO-RTR
+```
+ip route 192.168.100.0 255.255.255.0  10.0.0.5   ! Warehouse servers via WH-RTR
+ip route 0.0.0.0       0.0.0.0        192.0.2.2  ! Default via STO-ASA (optimized)
+```
+
 ---
 
 ## Security — ASA Firewalls
@@ -150,6 +172,10 @@ All inter-zone routing uses **static routes**. No dynamic routing protocol is co
 - **Outside:** 192.168.20.1/24 — security-level 0
 - **ACL:** `OUTSIDE-IN` permits all inbound IP (permissive for simulation)
 - **DHCP:** Assigns 192.168.10.10–10.31 to inside clients
+```
+access-list OUTSIDE-IN extended permit ip any any
+access-group OUTSIDE-IN in interface outside
+```
 
 
 ### WH-ASA — Optimized build only
@@ -157,6 +183,12 @@ All inter-zone routing uses **static routes**. No dynamic routing protocol is co
 - **Inside:** 192.168.100.2/24 — security-level 100
 - **Outside:** 192.168.200.2/252 — security-level 0
 - **NAT:** Dynamic interface NAT for the warehouse subnet
+```
+object network WH-NAT
+ subnet 192.168.100.0 255.255.255.0
+ nat (inside,outside) dynamic interface
+route outside 0.0.0.0 0.0.0.0 192.168.200.1 1
+```
 
 
 ### STO-ASA (CLT-ASA) — Optimized build only
@@ -164,6 +196,11 @@ All inter-zone routing uses **static routes**. No dynamic routing protocol is co
 - **Inside:** 192.168.50.2/24 — security-level 100
 - **Outside:** 192.0.2.2/30 — security-level 0
 - **NAT:** Dynamic interface NAT for the state office subnet
+```
+object network CLT-NAT
+ subnet 192.168.50.0 255.255.255.0
+ nat (inside,outside) dynamic interface
+```
 
 
 ---
@@ -204,6 +241,42 @@ All tests conducted between Organizational zone PCs and Warehouse servers (192.1
 
 ## Repository Structure
 
+```
+zedan-cloud-network/
+│
+├── README.md
+│
+├── configs/
+│   ├── base/
+│   │   ├── WH-RTR.txt
+│   │   ├── R-ORG.txt
+│   │   ├── STO-RTR.txt
+│   │   ├── ASA-ORG.txt
+│   │   ├── WH-SW.txt
+│   │   ├── SW-ORG.txt
+│   │   └── STO-SW.txt
+│   │
+│   └── optimized/
+│       ├── WH-RTR.txt
+│       ├── R-ORG.txt
+│       ├── STO-RTR.txt
+│       ├── WH-ASA.txt
+│       ├── ASA-ORG.txt
+│       ├── STO-ASA.txt
+│       ├── WH-SW.txt
+│       ├── SW-ORG.txt
+│       └── STO-SW.txt
+│
+└── images/
+    ├── topology-base.png
+    ├── topology-optimized.png
+    ├── test-ping.png
+    ├── test-rtt.png
+    ├── test-packet-loss.png
+    ├── test-jitter.png
+    ├── test-throughput.png
+    └── test-after-optimization.png
+```
 ---
 
 ## How to Use
