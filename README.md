@@ -31,7 +31,26 @@ This repository contains the Cisco Packet Tracer network simulations developed f
 ## Architecture Overview
 
 The network follows a **three-zone segmentation model** representing a warehouse hosting core services, an organizational headquarters, and a remote state office. All three zones are connected over a simulated Frame Relay WAN cloud. Each zone has a dedicated router, Layer 2 switch, and (in the optimized build) a Cisco ASA 5505 firewall.
+### Base Topology
+![Base Topology](images/topology-base.png)
 
+### Optimized Topology
+![Optimized Topology](images/topology-optimized.png)
+
+### Performance — Before Optimization
+| Test | Screenshot |
+|------|-----------|
+| Ping & Latency | ![Ping](images/test-ping.png) |
+| Round-Trip Time | ![RTT](images/test-rtt.png) |
+| Packet Loss | ![Packet Loss](images/test-packet-loss.png) |
+| Jitter | ![Jitter](images/test-jitter.png) |
+| Throughput | ![Throughput](images/test-throughput.png) |
+
+### Performance — After Optimization
+| Test | Screenshot |
+|------|-----------|
+| Ping & RTT | ![After Optimization](images/test-after-optimization.png) |
+| Throughput | ![Throughput Optimized](images/test-throughput-optimized.png) |
 
 ---
 
